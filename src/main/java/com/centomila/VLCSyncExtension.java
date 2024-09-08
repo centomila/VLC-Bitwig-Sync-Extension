@@ -3,11 +3,15 @@ package com.centomila;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.Transport;
 import com.bitwig.extension.controller.ControllerExtension;
+import com.centomila.VLCController;
+
 
 public class VLCSyncExtension extends ControllerExtension
 {
    private Transport transport;
    private ControllerHost host;
+   private boolean wasPlaying = false;
+   private VLCController vlcController;
 
    protected VLCSyncExtension(final VLCSyncExtensionDefinition definition, final ControllerHost host)
    {
@@ -21,7 +25,7 @@ public class VLCSyncExtension extends ControllerExtension
       transport = host.createTransport();
 
       // TODO: Perform your driver initialization here.
-      host.showPopupNotification("ChordGenerator Initialized");
+      host.showPopupNotification("VLCSync Initialized");
       transport.playPosition().markInterested();
       transport.playPositionInSeconds().markInterested();
       transport.getPosition().markInterested();
@@ -31,6 +35,9 @@ public class VLCSyncExtension extends ControllerExtension
       transport.playPositionInSeconds().subscribe();
       transport.getPosition().subscribe();
       transport.isPlaying().subscribe();
+
+      // Add observer for play state changes
+      transport.isPlaying().addValueObserver(this::onPlayStateChanged);
    }
 
    @Override
@@ -44,11 +51,31 @@ public class VLCSyncExtension extends ControllerExtension
    @Override
    public void flush()
    {
-      
       // TODO Send any updates you need here.
       final double testCurPos = transport.playPositionInSeconds().getAsDouble();
       host.println(String.valueOf(testCurPos));
    }
 
+   private void onPlayStateChanged(boolean isPlaying)
 
+   {
+      if (isPlaying && !wasPlaying)
+      {
+         host.println("VLC Started");
+         host.showPopupNotification("VLC Started");
+         // send command to VLC using the VLCController class
+         try {
+            VLCController.sendCommand("pl_play");
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+
+      }
+      else if (!isPlaying && wasPlaying)
+      {
+         host.println("VLC Stopped");
+         host.showPopupNotification("VLC Stopped");
+      }
+      wasPlaying = isPlaying;
+   }
 }
