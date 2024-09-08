@@ -4,7 +4,6 @@ import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.Transport;
 import com.bitwig.extension.controller.ControllerExtension;
 import com.bitwig.extension.controller.api.Preferences;
-import com.bitwig.extension.controller.api.SettableBooleanValue;
 import com.bitwig.extension.controller.api.SettableStringValue;
 import com.centomila.VLCController;
 
@@ -14,6 +13,7 @@ public class VLCSyncExtension extends ControllerExtension {
    private boolean wasPlaying = false;
    private int currentPlayPosition = 0;
    private String seekVLC = "";
+   private SettableStringValue VLCIpString;
 
    protected VLCSyncExtension(final VLCSyncExtensionDefinition definition, final ControllerHost host) {
       super(definition, host);
@@ -45,7 +45,7 @@ public class VLCSyncExtension extends ControllerExtension {
 
    @Override
    public void exit() {
-      // TODO: Perform any cleanup once the driver exits
+      // Perform any cleanup once the driver exits
       // For now just show a popup notification for verification that it is no longer
       // running.
       getHost().showPopupNotification("VLCSync Exited");
@@ -53,13 +53,13 @@ public class VLCSyncExtension extends ControllerExtension {
 
    @Override
    public void flush() {
-      // TODO Send any updates you need here.
+      // Send any updates you need here.
       currentPlayPosition = (int) transport.playPositionInSeconds().getAsDouble();
    }
 
    private void onPlayStateChangedVLCCommand(boolean isPlaying)
    {
-      final VLCController vlcController = new VLCController();
+      final VLCController vlcController = new VLCController("localhost");
       if (isPlaying && !wasPlaying) {
          host.println("VLC Started");
          // send command to VLC using the VLCController class
@@ -96,6 +96,6 @@ public class VLCSyncExtension extends ControllerExtension {
       VLCIpString.markInterested();
 
    }
-      private SettableStringValue VLCIpString;
+      
 
 }

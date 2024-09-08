@@ -5,9 +5,20 @@ import java.util.Base64;
 
 public class VLCController {
 
-    private static final String VLC_URL = "http://localhost:8080/requests/status.xml";
+    private final String VLC_HOST;
+    private final int VLC_PORT = 8080;
+    private String VLC_URL;
     private static final String USERNAME = "";
     private static final String PASSWORD = "test";
+
+    public String getVLC_HOST() {
+        return VLC_HOST;
+    }
+
+    public VLCController(String vlcHost) {
+        VLC_HOST = vlcHost;
+        VLC_URL = "http://" + VLC_HOST + ":" + VLC_PORT + "/requests/status.xml";
+    }
 
     public void sendCommand(String command) throws IOException, InterruptedException {
         
