@@ -5,18 +5,20 @@ import java.util.Base64;
 
 public class VLCController {
 
-    private final String VLC_HOST;
-    private final int VLC_PORT = 8080;
+    private String VLC_HOST;
+    private String VLC_PORT = "8080";
+    private String PASSWORD = "1234";
     private String VLC_URL;
     private static final String USERNAME = "";
-    private static final String PASSWORD = "test";
 
     public String getVLC_HOST() {
         return VLC_HOST;
     }
 
-    public VLCController(String vlcHost) {
+    public VLCController(String vlcHost, String vlcPort, String vlcPass) {
         VLC_HOST = vlcHost;
+        VLC_PORT = vlcPort;
+        PASSWORD = vlcPass;
         VLC_URL = "http://" + VLC_HOST + ":" + VLC_PORT + "/requests/status.xml";
     }
 

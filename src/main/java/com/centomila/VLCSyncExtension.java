@@ -13,7 +13,10 @@ public class VLCSyncExtension extends ControllerExtension {
    private boolean wasPlaying = false;
    private int currentPlayPosition = 0;
    private String seekVLC = "";
-   private SettableStringValue VLCIpString;
+   
+   private SettableStringValue VLCHostString;
+   private SettableStringValue VLCHostPortString;
+   private SettableStringValue VLCPasswordString;
 
    protected VLCSyncExtension(final VLCSyncExtensionDefinition definition, final ControllerHost host) {
       super(definition, host);
@@ -41,7 +44,7 @@ public class VLCSyncExtension extends ControllerExtension {
       // Add observer for play state changes
       transport.isPlaying().addValueObserver(this::onPlayStateChangedVLCCommand);
 
-      host.println(VLCIpString.get());
+      host.println(VLCHostString.get());
 
    }
 
@@ -61,7 +64,7 @@ public class VLCSyncExtension extends ControllerExtension {
 
    private void onPlayStateChangedVLCCommand(boolean isPlaying)
    {
-      final VLCController vlcController = new VLCController(VLCIpString.get());
+      final VLCController vlcController = new VLCController(VLCHostString.get(), VLCHostPortString.get(), VLCPasswordString.get());
       if (isPlaying && !wasPlaying) {
          host.println("VLC Started");
          // send command to VLC using the VLCController class
@@ -94,8 +97,15 @@ public class VLCSyncExtension extends ControllerExtension {
 
    private void createSettingsObjects(final ControllerHost host) {
       final Preferences preferences = host.getPreferences();
-      VLCIpString = preferences.getStringSetting("VLC IP or Host", "Controls", 100, "localhost");
-      VLCIpString.markInterested();
+      VLCHostString = preferences.getStringSetting("VLC IP or Host (Default: localhost)", "Controls", 100, "localhost");
+      VLCHostString.markInterested();
+
+      VLCHostPortString = preferences.getStringSetting("VLC Port (Default: 8080)", "Controls", 100, "8080");
+      VLCHostPortString.markInterested();
+
+      VLCPasswordString = preferences.getStringSetting("VLC Password (Default: 1234)", "Controls", 100, "1234");
+      VLCPasswordString.markInterested();
+
 
    }
       
