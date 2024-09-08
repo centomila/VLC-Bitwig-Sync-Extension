@@ -1,8 +1,6 @@
 package com.centomila;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 public class VLCController {
@@ -12,8 +10,8 @@ public class VLCController {
     private static final String PASSWORD = "test";
 
     public void sendCommand(String command) throws IOException, InterruptedException {
-        String encodedCommand = URLEncoder.encode(command, StandardCharsets.UTF_8);
-        String url = VLC_URL + "?command=" + encodedCommand;
+        
+        String url = VLC_URL + "?command=" + command;
 
         String response = HttpClientWrapper.sendGetRequest(url, USERNAME, PASSWORD);
 
@@ -26,11 +24,15 @@ public class VLCController {
             return;
         }
 
-        String command = args[0];
+        StringBuilder command = new StringBuilder();
+        for (String arg : args) {
+            command.append(arg).append(" ");
+        }
 
         VLCController controller = new VLCController();
         try {
-            controller.sendCommand(command);
+            System.out.println("Sending command: " + command);
+            controller.sendCommand(command.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }

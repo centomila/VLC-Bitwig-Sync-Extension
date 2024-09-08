@@ -11,6 +11,7 @@ public class VLCSyncExtension extends ControllerExtension
    private Transport transport;
    private ControllerHost host;
    private boolean wasPlaying = false;
+   private int currentPosition = 0;
    
    protected VLCSyncExtension(final VLCSyncExtensionDefinition definition, final ControllerHost host)
    {
@@ -52,8 +53,7 @@ public class VLCSyncExtension extends ControllerExtension
    public void flush()
    {
       // TODO Send any updates you need here.
-      final double testCurPos = transport.playPositionInSeconds().getAsDouble();
-      host.println(String.valueOf(testCurPos));
+      currentPosition = (int) transport.playPositionInSeconds().getAsDouble();
    }
    
    private void onPlayStateChanged(boolean isPlaying)
@@ -67,15 +67,26 @@ public class VLCSyncExtension extends ControllerExtension
          try {
             final VLCController vlcController = new VLCController();
             vlcController.sendCommand("pl_play");
+            final String commandForVLC = "seek&val=" + String.valueOf(currentPosition);
+            host.println(String.valueOf(commandForVLC));
+            vlcController.sendCommand(commandForVLC);
          } catch (Exception e) {
             e.printStackTrace();
          }
+
 
       }
       else if (!isPlaying && wasPlaying)
       {
          host.println("VLC Stopped");
          host.showPopupNotification("VLC Stopped");
+         // send command to VLC using the VLCController class
+         try {
+            final VLCController vlcController = new VLCController();
+            vlcController.sendCommand("pl_pause");
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
       }
       wasPlaying = isPlaying;
    }
