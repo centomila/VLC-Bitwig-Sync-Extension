@@ -79,7 +79,7 @@ public class VLCSyncExtension extends ControllerExtension {
          // send command to VLC using the VLCController class
          try {
             // pause
-            vlcController.sendCommand("pl_pause");
+            vlcController.sendCommand("pl_forcepause");
             // seek
             seekVLC = "seek&val=" + String.valueOf(currentPlayPosition);
             vlcController.sendCommand(seekVLC);
