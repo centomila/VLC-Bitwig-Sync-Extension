@@ -41,6 +41,8 @@ public class VLCSyncExtension extends ControllerExtension {
       // Add observer for play state changes
       transport.isPlaying().addValueObserver(this::onPlayStateChangedVLCCommand);
 
+      host.println(VLCIpString.get());
+
    }
 
    @Override
@@ -59,7 +61,7 @@ public class VLCSyncExtension extends ControllerExtension {
 
    private void onPlayStateChangedVLCCommand(boolean isPlaying)
    {
-      final VLCController vlcController = new VLCController("localhost");
+      final VLCController vlcController = new VLCController(VLCIpString.get());
       if (isPlaying && !wasPlaying) {
          host.println("VLC Started");
          // send command to VLC using the VLCController class
