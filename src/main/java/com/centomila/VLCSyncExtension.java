@@ -11,35 +11,35 @@ public class VLCSyncExtension extends ControllerExtension
    private Transport transport;
    private ControllerHost host;
    private boolean wasPlaying = false;
-   private VLCController vlcController;
-
+   
    protected VLCSyncExtension(final VLCSyncExtensionDefinition definition, final ControllerHost host)
    {
       super(definition, host);
    }
-
+   
    @Override
    public void init()
    {
       host = getHost();
       transport = host.createTransport();
-
+      
       // TODO: Perform your driver initialization here.
       host.showPopupNotification("VLCSync Initialized");
       transport.playPosition().markInterested();
       transport.playPositionInSeconds().markInterested();
       transport.getPosition().markInterested();
       transport.isPlaying().markInterested();
-
+      
       transport.playPosition().subscribe();
       transport.playPositionInSeconds().subscribe();
       transport.getPosition().subscribe();
       transport.isPlaying().subscribe();
-
+      
       // Add observer for play state changes
       transport.isPlaying().addValueObserver(this::onPlayStateChanged);
+      
    }
-
+   
    @Override
    public void exit()
    {
@@ -47,7 +47,7 @@ public class VLCSyncExtension extends ControllerExtension
       // For now just show a popup notification for verification that it is no longer running.
       getHost().showPopupNotification("VLCSync Exited");
    }
-
+   
    @Override
    public void flush()
    {
@@ -55,9 +55,9 @@ public class VLCSyncExtension extends ControllerExtension
       final double testCurPos = transport.playPositionInSeconds().getAsDouble();
       host.println(String.valueOf(testCurPos));
    }
-
+   
    private void onPlayStateChanged(boolean isPlaying)
-
+   
    {
       if (isPlaying && !wasPlaying)
       {
@@ -65,7 +65,8 @@ public class VLCSyncExtension extends ControllerExtension
          host.showPopupNotification("VLC Started");
          // send command to VLC using the VLCController class
          try {
-            VLCController.sendCommand("pl_play");
+            final VLCController vlcController = new VLCController();
+            vlcController.sendCommand("pl_play");
          } catch (Exception e) {
             e.printStackTrace();
          }

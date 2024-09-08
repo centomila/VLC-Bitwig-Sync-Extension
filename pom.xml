@@ -10,7 +10,7 @@
 
 	<properties>
 		<bitwig.extensions.dir>C:/Users/Bach/OneDrive/Documenti/Bitwig Studio/Extensions</bitwig.extensions.dir>
-		<!-- Any other properties you might have -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<repositories>
@@ -26,6 +26,12 @@
 			<groupId>com.bitwig</groupId>
 			<artifactId>extension-api</artifactId>
 			<version>19</version>
+		</dependency>
+		<!-- Apache HttpClient -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.13</version>
 		</dependency>
 	</dependencies>
 
@@ -46,6 +52,23 @@
 			</plugin>
 
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.2.4</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
 				<groupId>com.coderplus.maven.plugins</groupId>
 				<artifactId>copy-rename-maven-plugin</artifactId>
 				<version>1.0</version>
@@ -58,9 +81,7 @@
 						</goals>
 						<configuration>
 							<sourceFile>${project.build.directory}/${project.build.finalName}.jar</sourceFile>
-
 							<destinationFile>${bitwig.extensions.dir}/VLCSync.bwextension</destinationFile>
-
 						</configuration>
 					</execution>
 				</executions>
@@ -69,4 +90,3 @@
 	</build>
 
 </project>
-
