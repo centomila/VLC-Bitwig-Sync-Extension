@@ -12,6 +12,7 @@ public class VLCSyncExtension extends ControllerExtension
    private ControllerHost host;
    private boolean wasPlaying = false;
    private int currentPlayPosition = 0;
+   private String seekVLC = "";
    
    protected VLCSyncExtension(final VLCSyncExtensionDefinition definition, final ControllerHost host)
    {
@@ -63,13 +64,14 @@ public class VLCSyncExtension extends ControllerExtension
       if (isPlaying && !wasPlaying)
       {
          host.println("VLC Started");
-         host.showPopupNotification("VLC Started");
          // send command to VLC using the VLCController class
          try {
+            // seek
+            seekVLC = "seek&val=" + String.valueOf(currentPlayPosition);
+            host.println(String.valueOf(seekVLC));
+            vlcController.sendCommand(seekVLC);
+            // play
             vlcController.sendCommand("pl_play");
-            final String commandForVLC = "seek&val=" + String.valueOf(currentPlayPosition);
-            host.println(String.valueOf(commandForVLC));
-            vlcController.sendCommand(commandForVLC);
          } catch (Exception e) {
             e.printStackTrace();
          }
@@ -79,10 +81,13 @@ public class VLCSyncExtension extends ControllerExtension
       else if (!isPlaying && wasPlaying)
       {
          host.println("VLC Stopped");
-         host.showPopupNotification("VLC Stopped");
          // send command to VLC using the VLCController class
          try {
+            // pause
             vlcController.sendCommand("pl_pause");
+            // seek
+            seekVLC = "seek&val=" + String.valueOf(currentPlayPosition);
+            vlcController.sendCommand(seekVLC);
          } catch (Exception e) {
             e.printStackTrace();
          }
