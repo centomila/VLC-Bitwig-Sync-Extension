@@ -127,7 +127,7 @@ public class VLCSyncExtension extends ControllerExtension {
       VLCHostString = preferences.getStringSetting("VLC IP or Host (Default: localhost)", "VLC Host", 100, "localhost");
       VLCHostString.markInterested();
 
-      VLCHostPortString = preferences.getStringSetting("VLC Port (Default: 8080)", "VLC Host", 100, "8080");
+      VLCHostPortString = preferences.getStringSetting("VLC Port (Default: 8080)", "VLC Host", 6, "8080");
       VLCHostPortString.markInterested();
 
       VLCPasswordString = preferences.getStringSetting("VLC Password (Default: 1234)", "VLC Host", 100, "1234");
