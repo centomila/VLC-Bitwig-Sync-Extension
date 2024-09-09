@@ -41,13 +41,6 @@ public class VLCController {
             command.append(arg).append(" ");
         }
 
-        VLCController controller = new VLCController();
-        try {
-            System.out.println("Sending command: " + command);
-            controller.sendCommand(command.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }
 

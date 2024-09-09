@@ -9,7 +9,7 @@
 	<version>0.1</version>
 
 	<properties>
-		<bitwig.extensions.dir>${env.USERPROFILE}/OneDrive/Documents/Bitwig Studio/Extensions</bitwig.extensions.dir>
+		<bitwig.extensions.dir>${env.USERPROFILE}/OneDrive/Documenti/Bitwig Studio/Extensions</bitwig.extensions.dir>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 

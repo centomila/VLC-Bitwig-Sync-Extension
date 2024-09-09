@@ -68,6 +68,7 @@ public class VLCSyncExtension extends ControllerExtension {
    private void onPlayStateChangedVLCCommand(boolean isPlaying)
    {
       final VLCController vlcController = new VLCController(VLCHostString.get(), VLCHostPortString.get(), VLCPasswordString.get());
+      
       if (isPlaying) {
          host.println("VLC Started");
          // send command to VLC using the VLCController class
