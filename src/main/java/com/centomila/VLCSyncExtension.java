@@ -35,14 +35,17 @@ public class VLCSyncExtension extends ControllerExtension {
       transport.playPositionInSeconds().markInterested();
       transport.getPosition().markInterested();
       transport.isPlaying().markInterested();
+      transport.playStartPositionInSeconds().markInterested();
 
       transport.playPosition().subscribe();
       transport.playPositionInSeconds().subscribe();
       transport.getPosition().subscribe();
       transport.isPlaying().subscribe();
+      transport.playStartPositionInSeconds().subscribe();
 
       // Add observer for play state changes
       transport.isPlaying().addValueObserver(this::onPlayStateChangedVLCCommand);
+      transport.playStartPositionInSeconds().addValueObserver(this::onChangePlayStartPositionVLCCommand);
 
       host.println(VLCHostString.get());
 
@@ -65,7 +68,7 @@ public class VLCSyncExtension extends ControllerExtension {
    private void onPlayStateChangedVLCCommand(boolean isPlaying)
    {
       final VLCController vlcController = new VLCController(VLCHostString.get(), VLCHostPortString.get(), VLCPasswordString.get());
-      if (isPlaying && !wasPlaying) {
+      if (isPlaying) {
          host.println("VLC Started");
          // send command to VLC using the VLCController class
          try {
@@ -79,10 +82,12 @@ public class VLCSyncExtension extends ControllerExtension {
             e.printStackTrace();
          }
 
-      } else if (!isPlaying && wasPlaying) {
+      } else if (!isPlaying) {
          host.println("VLC Stopped");
          // send command to VLC using the VLCController class
          try {
+            
+            // move in bitwig to the round second
             // pause
             vlcController.sendCommand("pl_forcepause");
             // seek
@@ -94,18 +99,39 @@ public class VLCSyncExtension extends ControllerExtension {
       }
       wasPlaying = isPlaying;
    }
+   
+   private void onChangePlayStartPositionVLCCommand(double startPosition) {
+      final VLCController vlcController = new VLCController(VLCHostString.get(), VLCHostPortString.get(),
+            VLCPasswordString.get());
+      
+      
+            // round start position
+      int startPositionInt = (int) startPosition;
+
+      host.println("START POSITION: " + startPositionInt);
+      // send command to VLC using the VLCController class
+      try {
+         
+         // seek
+         seekVLC = "seek&val=" + String.valueOf(startPositionInt);
+         vlcController.sendCommand(seekVLC);
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+
+   }
 
    private void createSettingsObjects(final ControllerHost host) {
       final Preferences preferences = host.getPreferences();
-      VLCHostString = preferences.getStringSetting("VLC IP or Host (Default: localhost)", "Controls", 100, "localhost");
+
+      VLCHostString = preferences.getStringSetting("VLC IP or Host (Default: localhost)", "VLC Host", 100, "localhost");
       VLCHostString.markInterested();
 
-      VLCHostPortString = preferences.getStringSetting("VLC Port (Default: 8080)", "Controls", 100, "8080");
+      VLCHostPortString = preferences.getStringSetting("VLC Port (Default: 8080)", "VLC Host", 100, "8080");
       VLCHostPortString.markInterested();
 
-      VLCPasswordString = preferences.getStringSetting("VLC Password (Default: 1234)", "Controls", 100, "1234");
+      VLCPasswordString = preferences.getStringSetting("VLC Password (Default: 1234)", "VLC Host", 100, "1234");
       VLCPasswordString.markInterested();
-
 
    }
       

@@ -1,0 +1,39 @@
+# Ignore Maven build directory
+target/
+
+# Ignore Eclipse project files
+.project
+.classpath
+.settings/
+
+# Ignore IntelliJ project files
+.idea/
+*.iml
+
+# Ignore log files
+logs/
+
+# Ignore OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Ignore tmp files
+*.swp
+
+# Ignore Maven dependency files
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Ignore BlueJ files
+bluej.properties
+bluej.local
+bluej.project
